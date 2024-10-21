@@ -46,6 +46,13 @@ class LeitnerScheduler:
         if review_datetime is None:
             review_datetime = datetime.now()
 
+        if card.due is None:
+            card.due = review_datetime.replace(hour=0, minute=0, second=0, microsecond=0) # beginning of the day of review
+
+        card_is_due = review_datetime >= card.due
+        if not card_is_due:
+            raise RuntimeError(f"Card is not due for review until {card.due}.")
+
         review_log = ReviewLog(rating, review_datetime, card.box)
 
         if rating == Rating.Fail:
@@ -66,7 +73,7 @@ class LeitnerScheduler:
 
             next_due_date = begin_datetime + (timedelta(days=interval) * i)
             i += 1
-            
+
         card.due = next_due_date
 
         return card, review_log
