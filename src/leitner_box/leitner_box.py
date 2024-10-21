@@ -1,5 +1,5 @@
 from enum import IntEnum
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 
 class Rating(IntEnum):
 
@@ -33,14 +33,18 @@ class LeitnerScheduler:
     box_intervals: list[int]
     start_datetime: datetime
 
-    def __init__(self):
+    def __init__(self, start_datetime=None):
 
         self.box_intervals = [1, 2, 7] # how many days in between you review each box; default box1 - everyday, box2 - every 2 days, box3, every seven days
-        self.start_datetime = datetime.now(timezone.utc)
+        if start_datetime is None:
+            self.start_datetime = datetime.now()
+        else:
+            self.start_datetime = start_datetime
 
-    def review_card(self, card, rating):
+    def review_card(self, card, rating, review_datetime=None):
 
-        review_datetime = datetime.now(timezone.utc)
+        if review_datetime is None:
+            review_datetime = datetime.now()
 
         review_log = ReviewLog(rating, review_datetime, card.box)
 
