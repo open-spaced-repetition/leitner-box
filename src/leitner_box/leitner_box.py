@@ -52,28 +52,21 @@ class LeitnerScheduler:
 
             card.box = 1
 
-            # card will be due at the beginning of the next day
-            # TODO: change this use self.box_intervals[0]
-            card.due = (review_datetime + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
-
         elif rating == Rating.Pass:
 
             if card.box < len(self.box_intervals):
                 card.box += 1
 
-            interval = self.box_intervals[card.box-1]
+        interval = self.box_intervals[card.box-1]
 
-            begin_datetime = (self.start_datetime - timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+        begin_datetime = (self.start_datetime - timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+        i = 1
+        next_due_date = begin_datetime + (timedelta(days=interval) * i)
+        while next_due_date <= review_datetime:
 
-            # TODO: find more efficient/clean way to find next due date
-            i = 1
             next_due_date = begin_datetime + (timedelta(days=interval) * i)
-            while next_due_date <= review_datetime:
-
-                next_due_date = begin_datetime + (timedelta(days=interval) * i)
-
-                i += 1
-
-            card.due = next_due_date
+            i += 1
+            
+        card.due = next_due_date
 
         return card, review_log
