@@ -6,4 +6,8 @@ build/
 *.egg-info/
 dist/
 
+# Jupyter Notebook
+*.ipynb
+.ipynb_checkpoints
+
 .DS_Store
