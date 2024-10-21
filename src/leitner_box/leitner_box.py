@@ -32,14 +32,17 @@ class LeitnerScheduler:
 
     box_intervals: list[int]
     start_datetime: datetime
+    on_fail: str
 
-    def __init__(self, start_datetime=None):
+    def __init__(self, start_datetime=None, on_fail='first_box'):
 
         self.box_intervals = [1, 2, 7] # how many days in between you review each box; default box1 - everyday, box2 - every 2 days, box3, every seven days
         if start_datetime is None:
             self.start_datetime = datetime.now()
         else:
             self.start_datetime = start_datetime
+
+        self.on_fail = on_fail
 
     def review_card(self, card, rating, review_datetime=None):
 
@@ -57,7 +60,10 @@ class LeitnerScheduler:
 
         if rating == Rating.Fail:
 
-            card.box = 1
+            if self.on_fail == 'first_box':
+                card.box = 1
+            elif self.on_fail == 'prev_box' and card.box > 1:
+                card.box -= 1
 
         elif rating == Rating.Pass:
 
