@@ -283,3 +283,79 @@ class TestLeitnerBox:
         assert card.box == 2
         # card is also due next day because that's a day that box 2 is repeated
         assert card.due == datetime(2024, 1, 16, 0, 0, 0, 0, tzinfo=ZoneInfo('America/Los_Angeles'))
+
+    def test_box_intervals(self):
+
+        # create Leitner system at 2:30pm on Jan. 1, 2024
+        box_intervals = [1,2,3,5]
+        start_datetime = datetime(2024, 1, 1, 14, 30, 0, 0)
+        scheduler = LeitnerScheduler(box_intervals=box_intervals, start_datetime=start_datetime)
+
+        # create new Card
+        card = Card()
+
+        assert card.box == 1
+        assert card.due is None
+
+        # fail the card 2:35pm on Jan. 1, 2024
+        rating = Rating.Fail
+        review_datetime = datetime(2024, 1, 1, 14, 35, 0, 0)
+        card, review_log = scheduler.review_card(card, rating, review_datetime)
+
+        assert card.box == 1
+        assert card.due == datetime(2024, 1, 2, 0, 0, 0, 0)
+
+        rating = Rating.Pass
+        review_datetime = datetime(2024, 1, 2, 0, 0, 0, 0)
+        card, review_log = scheduler.review_card(card, rating, review_datetime)
+
+        assert card.box == 2
+        assert card.due == datetime(2024, 1, 4, 0, 0, 0, 0)
+
+        # attempt to pass the card on Jan. 3 when it is not due
+        rating = Rating.Pass
+        review_datetime = datetime(2024, 1, 3, 0, 0, 0, 0)
+        with pytest.raises(RuntimeError):
+            card, review_log = scheduler.review_card(card, rating, review_datetime)
+
+        rating = Rating.Pass
+        review_datetime = datetime(2024, 1, 4, 0, 0, 0, 0)
+        card, review_log = scheduler.review_card(card, rating, review_datetime)
+
+        assert card.box == 3
+        assert card.due == datetime(2024, 1, 6, 0, 0, 0, 0)
+
+        rating = Rating.Pass
+        review_datetime = datetime(2024, 1, 6, 0, 0, 0, 0)
+        card, review_log = scheduler.review_card(card, rating, review_datetime)
+
+        assert card.box == 4
+        assert card.due == datetime(2024, 1, 10, 0, 0, 0, 0)
+
+        rating = Rating.Pass
+        review_datetime = datetime(2024, 1, 10, 0, 0, 0, 0)
+        card, review_log = scheduler.review_card(card, rating, review_datetime)
+
+        assert card.box == 4
+        assert card.due == datetime(2024, 1, 15, 0, 0, 0, 0)
+
+        rating = Rating.Fail
+        review_datetime = datetime(2024, 1, 15, 0, 0, 0, 0)
+        card, review_log = scheduler.review_card(card, rating, review_datetime)
+
+        assert card.box == 1
+        assert card.due == datetime(2024, 1, 16, 0, 0, 0, 0)
+
+        rating = Rating.Pass
+        review_datetime = datetime(2024, 1, 16, 0, 0, 0, 0)
+        card, review_log = scheduler.review_card(card, rating, review_datetime)
+
+        assert card.box == 2
+        assert card.due == datetime(2024, 1, 18, 0, 0, 0, 0)
+
+        rating = Rating.Pass
+        review_datetime = datetime(2024, 1, 18, 0, 0, 0, 0)
+        card, review_log = scheduler.review_card(card, rating, review_datetime)
+
+        assert card.box == 3
+        assert card.due == datetime(2024, 1, 21, 0, 0, 0, 0)

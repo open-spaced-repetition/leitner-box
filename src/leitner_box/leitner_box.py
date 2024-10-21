@@ -34,9 +34,9 @@ class LeitnerScheduler:
     start_datetime: datetime
     on_fail: str
 
-    def __init__(self, start_datetime=None, on_fail='first_box'):
+    def __init__(self, box_intervals=[1, 2, 7], start_datetime=None, on_fail='first_box'):
 
-        self.box_intervals = [1, 2, 7] # how many days in between you review each box; default box1 - everyday, box2 - every 2 days, box3, every seven days
+        self.box_intervals = box_intervals # how many days in between you review each box; default box1 - everyday, box2 - every 2 days, box3, every seven days
         if start_datetime is None:
             self.start_datetime = datetime.now()
         else:
