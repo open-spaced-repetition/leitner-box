@@ -11,10 +11,36 @@ class Card:
     box: int
     due: datetime
 
-    def __init__(self):
+    def __init__(self, box=1, due=None):
 
-        self.box = 1
-        self.due = None
+        self.box = box
+        self.due = due
+
+    def to_dict(self):
+
+        return_dict = {
+            "box": self.box,
+        }
+
+        if self.due is not None:
+
+            return_dict["due"] = self.due.isoformat()
+
+        return return_dict
+    
+    @staticmethod
+    def from_dict(source_dict):
+
+        box = int(source_dict['box'])
+
+        if "due" in source_dict:
+
+            due = datetime.fromisoformat(source_dict["due"])
+        else:
+            due = None
+
+        return Card(box=box, due=due)
+
 
 class ReviewLog:
 
@@ -27,6 +53,25 @@ class ReviewLog:
         self.rating = rating
         self.review_datetime = review_datetime
         self.box = box
+
+    def to_dict(self):
+
+        return_dict = {
+            "rating": self.rating.value,
+            "review_datetime": self.review_datetime.isoformat(),
+            "box": self.box
+        }
+
+        return return_dict
+    
+    @staticmethod
+    def from_dict(source_dict):
+
+        rating = Rating(int(source_dict["rating"]))
+        review_datetime = datetime.fromisoformat(source_dict["review_datetime"])
+        box = int(source_dict["box"])
+
+        return ReviewLog(rating=rating, review_datetime=review_datetime, box=box)
 
 class LeitnerScheduler:
 
@@ -83,3 +128,22 @@ class LeitnerScheduler:
         card.due = next_due_date
 
         return card, review_log
+    
+    def to_dict(self):
+
+        return_dict = {
+            "box_intervals": self.box_intervals,
+            "start_datetime": self.start_datetime.isoformat(),
+            "on_fail": self.on_fail
+        }
+
+        return return_dict
+    
+    @staticmethod
+    def from_dict(source_dict):
+
+        box_intervals = source_dict['box_intervals']
+        start_datetime = datetime.fromisoformat(source_dict['start_datetime'])
+        on_fail = source_dict['on_fail']
+
+        return LeitnerScheduler(box_intervals=box_intervals, start_datetime=start_datetime, on_fail=on_fail)

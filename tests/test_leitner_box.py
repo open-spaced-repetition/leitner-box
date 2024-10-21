@@ -1,6 +1,7 @@
 from leitner_box import LeitnerScheduler, Card, Rating, ReviewLog
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
+import json
 import pytest
 
 class TestLeitnerBox:
@@ -359,3 +360,44 @@ class TestLeitnerBox:
 
         assert card.box == 3
         assert card.due == datetime(2024, 1, 21, 0, 0, 0, 0)
+
+    def test_serialize(self):
+
+        scheduler = LeitnerScheduler()
+
+        card = Card()
+
+        # card and scheduler are json-serializable
+        assert type(json.dumps(scheduler.to_dict())) == str
+        assert type(json.dumps(card.to_dict())) == str
+
+        # card can be serialized and de-serialized while remaining the same
+        card_dict = card.to_dict()
+        copied_card = Card.from_dict(card_dict)
+        assert vars(card) == vars(copied_card)
+        assert card.to_dict() == copied_card.to_dict()
+
+        # scheduler can be serialized and de-serialized while remaining the same
+        scheduler_dict = scheduler.to_dict()
+        copied_scheduler = LeitnerScheduler.from_dict(scheduler_dict)
+        assert vars(scheduler) == vars(copied_scheduler)
+        assert scheduler.to_dict() == copied_scheduler.to_dict()
+
+        # review the card and perform more tests
+        rating = Rating.Pass
+        card, review_log = scheduler.review_card(card, rating)
+
+        # review log is json-serializable
+        assert type(json.dumps(review_log.to_dict())) == str
+
+        # the new reviewed card can be serialized and de-serialized while remaining the same
+        card_dict = card.to_dict()
+        copied_card = Card.from_dict(card_dict)
+        assert vars(card) == vars(copied_card)
+        assert card.to_dict() == copied_card.to_dict()
+
+        # review_log can be serialized and de-serialized while remaining the same
+        review_log_dict = review_log.to_dict()
+        copied_review_log = ReviewLog.from_dict(review_log_dict)
+        assert vars(review_log) == vars(copied_review_log)
+        assert review_log.to_dict() == copied_review_log.to_dict() 
