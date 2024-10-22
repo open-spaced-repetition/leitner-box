@@ -1,5 +1,6 @@
 from enum import IntEnum
 from datetime import datetime, timedelta
+from typing import Optional, Union, Any
 
 class Rating(IntEnum):
 
@@ -9,16 +10,16 @@ class Rating(IntEnum):
 class Card:
 
     box: int
-    due: datetime
+    due: Optional[datetime]
 
-    def __init__(self, box=1, due=None):
+    def __init__(self, box: int=1, due: Optional[datetime]=None) -> None:
 
         self.box = box
         self.due = due
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Union[int, str]]:
 
-        return_dict = {
+        return_dict: dict[str, Union[int, str]] = {
             "box": self.box,
         }
 
@@ -29,7 +30,7 @@ class Card:
         return return_dict
     
     @staticmethod
-    def from_dict(source_dict):
+    def from_dict(source_dict: dict[str, Any]) -> "Card":
 
         box = int(source_dict['box'])
 
@@ -44,17 +45,17 @@ class Card:
 
 class ReviewLog:
 
-    rating: int
+    rating: Rating
     review_datetime: datetime
     box: int
 
-    def __init__(self, rating, review_datetime, box):
+    def __init__(self, rating: Rating, review_datetime: datetime, box: int) -> None:
 
         self.rating = rating
         self.review_datetime = review_datetime
         self.box = box
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Union[int, str]]:
 
         return_dict = {
             "rating": self.rating.value,
@@ -65,7 +66,7 @@ class ReviewLog:
         return return_dict
     
     @staticmethod
-    def from_dict(source_dict):
+    def from_dict(source_dict: dict[str, Any]) -> "ReviewLog":
 
         rating = Rating(int(source_dict["rating"]))
         review_datetime = datetime.fromisoformat(source_dict["review_datetime"])
@@ -79,7 +80,7 @@ class LeitnerScheduler:
     start_datetime: datetime
     on_fail: str
 
-    def __init__(self, box_intervals=[1, 2, 7], start_datetime=None, on_fail='first_box'):
+    def __init__(self, box_intervals: list[int]=[1, 2, 7], start_datetime: Optional[datetime]=None, on_fail: str='first_box') -> None:
 
         if box_intervals[0] != 1:
 
@@ -93,7 +94,7 @@ class LeitnerScheduler:
 
         self.on_fail = on_fail
 
-    def review_card(self, card, rating, review_datetime=None):
+    def review_card(self, card: Card, rating: Rating, review_datetime: Optional[datetime]=None) -> tuple[Card, ReviewLog]:
 
         # the card to be returned after review
         new_card = Card(box=card.box, due=card.due)
@@ -136,9 +137,9 @@ class LeitnerScheduler:
 
         return new_card, review_log
     
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Union[list[int], int, str]]:
 
-        return_dict = {
+        return_dict: dict[str, Union[list[int], int, str]] = {
             "box_intervals": self.box_intervals,
             "start_datetime": self.start_datetime.isoformat(),
             "on_fail": self.on_fail
@@ -147,7 +148,7 @@ class LeitnerScheduler:
         return return_dict
     
     @staticmethod
-    def from_dict(source_dict):
+    def from_dict(source_dict: dict[str, Any]) -> "LeitnerScheduler":
 
         box_intervals = source_dict['box_intervals']
         start_datetime = datetime.fromisoformat(source_dict['start_datetime'])
