@@ -81,6 +81,10 @@ class LeitnerScheduler:
 
     def __init__(self, box_intervals=[1, 2, 7], start_datetime=None, on_fail='first_box'):
 
+        if box_intervals[0] != 1:
+
+            raise ValueError("Box 1 must have an interval of 1 day. This may change in future versions.")
+
         self.box_intervals = box_intervals # how many days in between you review each box; default box1 - everyday, box2 - every 2 days, box3, every seven days
         if start_datetime is None:
             self.start_datetime = datetime.now()
