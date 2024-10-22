@@ -95,31 +95,34 @@ class LeitnerScheduler:
 
     def review_card(self, card, rating, review_datetime=None):
 
+        # the card to be returned after review
+        new_card = Card(box=card.box, due=card.due)
+
         if review_datetime is None:
             review_datetime = datetime.now()
 
-        if card.due is None:
-            card.due = review_datetime.replace(hour=0, minute=0, second=0, microsecond=0) # beginning of the day of review
+        if new_card.due is None:
+            new_card.due = review_datetime.replace(hour=0, minute=0, second=0, microsecond=0) # beginning of the day of review
 
-        card_is_due = review_datetime >= card.due
+        card_is_due = review_datetime >= new_card.due
         if not card_is_due:
-            raise RuntimeError(f"Card is not due for review until {card.due}.")
+            raise RuntimeError(f"Card is not due for review until {new_card.due}.")
 
-        review_log = ReviewLog(rating, review_datetime, card.box)
+        review_log = ReviewLog(rating, review_datetime, new_card.box)
 
         if rating == Rating.Fail:
 
             if self.on_fail == 'first_box':
-                card.box = 1
-            elif self.on_fail == 'prev_box' and card.box > 1:
-                card.box -= 1
+                new_card.box = 1
+            elif self.on_fail == 'prev_box' and new_card.box > 1:
+                new_card.box -= 1
 
         elif rating == Rating.Pass:
 
-            if card.box < len(self.box_intervals):
-                card.box += 1
+            if new_card.box < len(self.box_intervals):
+                new_card.box += 1
 
-        interval = self.box_intervals[card.box-1]
+        interval = self.box_intervals[new_card.box-1]
 
         begin_datetime = (self.start_datetime - timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
         i = 1
@@ -129,9 +132,9 @@ class LeitnerScheduler:
             next_due_date = begin_datetime + (timedelta(days=interval) * i)
             i += 1
 
-        card.due = next_due_date
+        new_card.due = next_due_date
 
-        return card, review_log
+        return new_card, review_log
     
     def to_dict(self):
 
