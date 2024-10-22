@@ -1,13 +1,35 @@
+"""
+leitner_box.leitner_box
+
+This module defines each of the classes used in the leitner_box package.
+
+Classes:
+    Rating: Enum representing the two possible ratings when reviewing a card.
+    Card: Represents a flashcard in the Leitner System.
+    ReviewLog: Represents the log entry of a Card object that has been reviewed.
+    LeitnerScheduler: The Leitner System scheduler.
+"""
+
 from enum import IntEnum
 from datetime import datetime, timedelta
 from typing import Optional, Union, Any
 
 class Rating(IntEnum):
+    """
+    Enum representing the two possible ratings when reviewing a Card object.
+    """
 
     Fail = 0
     Pass = 1
 
 class Card:
+    """
+    Represents a flashcard in the Leitner System.
+
+    Attributes:
+        box (int): The box that the card is currently in.
+        due (Optional[datetime]): When the card is due for review.
+    """
 
     box: int
     due: Optional[datetime]
@@ -44,6 +66,14 @@ class Card:
 
 
 class ReviewLog:
+    """
+    Represents the log entry of a Card object that has been reviewed.
+    
+    Attributes:
+        rating (Rating): The rating given to the card during the review.
+        review_datetime (datetime): The date and time of the review.
+        box (int): The box that the card was in when it was reviewed.
+    """
 
     rating: Rating
     review_datetime: datetime
@@ -75,6 +105,16 @@ class ReviewLog:
         return ReviewLog(rating=rating, review_datetime=review_datetime, box=box)
 
 class LeitnerScheduler:
+    """
+    The Leitner System scheduler.
+
+    Enables the reviewing and future scheduling of cards according the Leitner System.
+
+    Attributes:
+        box_intervals (list[int]): List of integers representing the interval lengths --in days-- of each box. The number of boxes is equal to the number of the length of box_intervals.
+        start_datetime (datetime): The date and time that the LeitnerScheduler object was created. This is needed for scheduling purposes.
+        on_fail (str): What to do when a card is failed. Possible values are 'first_box' to move the card back to box 1, and 'prev_box' to move the card to the next lowest box.
+    """
 
     box_intervals: list[int]
     start_datetime: datetime
@@ -95,6 +135,20 @@ class LeitnerScheduler:
         self.on_fail = on_fail
 
     def review_card(self, card: Card, rating: Rating, review_datetime: Optional[datetime]=None) -> tuple[Card, ReviewLog]:
+        """
+        Reviews a card with a given rating at a specified time.
+
+        Args:
+            card (Card): The card being reviewed.
+            rating (Rating): The chosen rating for the card being reviewed.
+            review_datetime (Optional[datetime]): The date and time of the review.
+
+        Returns:
+            tuple: A tuple containing the updated, reviewed card and its corresponding review log.
+
+        Raises:
+            RuntimeError: If the given card is reviewed at a time where it is not yet due.
+        """
 
         # the card to be returned after review
         new_card = Card(box=card.box, due=card.due)
