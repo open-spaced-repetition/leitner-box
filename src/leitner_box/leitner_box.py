@@ -12,7 +12,7 @@ Classes:
 
 from enum import IntEnum
 from datetime import datetime, timedelta
-from typing import Optional, Union, Any
+from typing import Optional, Union, Any, Literal
 
 class Rating(IntEnum):
     """
@@ -120,7 +120,7 @@ class LeitnerScheduler:
     start_datetime: datetime
     on_fail: str
 
-    def __init__(self, box_intervals: list[int]=[1, 2, 7], start_datetime: Optional[datetime]=None, on_fail: str='first_box') -> None:
+    def __init__(self, box_intervals: list[int]=[1, 2, 7], start_datetime: Optional[datetime]=None, on_fail: Literal['first_box', 'prev_box']='first_box') -> None:
 
         if box_intervals[0] != 1:
 
