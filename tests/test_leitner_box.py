@@ -399,5 +399,4 @@ class TestLeitnerBox:
         # review_log can be serialized and de-serialized while remaining the same
         review_log_dict = review_log.to_dict()
         copied_review_log = ReviewLog.from_dict(review_log_dict)
-        assert vars(review_log) == vars(copied_review_log)
         assert review_log.to_dict() == copied_review_log.to_dict() 

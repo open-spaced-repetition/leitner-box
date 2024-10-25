@@ -13,6 +13,7 @@ Classes:
 from enum import IntEnum
 from datetime import datetime, timedelta
 from typing import Optional, Union, Any, Literal
+from copy import deepcopy
 
 class Rating(IntEnum):
     """
@@ -70,27 +71,27 @@ class ReviewLog:
     Represents the log entry of a Card object that has been reviewed.
     
     Attributes:
+        card (Card): Copy of the card object that was reviewed.
         rating (Rating): The rating given to the card during the review.
         review_datetime (datetime): The date and time of the review.
-        box (int): The box that the card was in when it was reviewed.
     """
 
+    card: Card
     rating: Rating
     review_datetime: datetime
-    box: int
 
-    def __init__(self, rating: Rating, review_datetime: datetime, box: int) -> None:
+    def __init__(self, card: Card, rating: Rating, review_datetime: datetime) -> None:
 
+        self.card = deepcopy(card)
         self.rating = rating
         self.review_datetime = review_datetime
-        self.box = box
 
-    def to_dict(self) -> dict[str, Union[int, str]]:
+    def to_dict(self) -> dict[str, Union[dict, int, str]]:
 
         return_dict = {
+            "card": self.card.to_dict(),
             "rating": self.rating.value,
             "review_datetime": self.review_datetime.isoformat(),
-            "box": self.box
         }
 
         return return_dict
@@ -98,11 +99,11 @@ class ReviewLog:
     @staticmethod
     def from_dict(source_dict: dict[str, Any]) -> "ReviewLog":
 
+        card = Card.from_dict(source_dict['card'])
         rating = Rating(int(source_dict["rating"]))
         review_datetime = datetime.fromisoformat(source_dict["review_datetime"])
-        box = int(source_dict["box"])
 
-        return ReviewLog(rating=rating, review_datetime=review_datetime, box=box)
+        return ReviewLog(card=card, rating=rating, review_datetime=review_datetime)
 
 class LeitnerScheduler:
     """
@@ -163,7 +164,7 @@ class LeitnerScheduler:
         if not card_is_due:
             raise RuntimeError(f"Card is not due for review until {new_card.due}.")
 
-        review_log = ReviewLog(rating, review_datetime, new_card.box)
+        review_log = ReviewLog(card=card, rating=rating, review_datetime=review_datetime)
 
         if rating == Rating.Fail:
 
