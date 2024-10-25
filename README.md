@@ -34,7 +34,7 @@ rating = Rating.Pass
 
 card, review_log = scheduler.review_card(card, rating)
 
-print(f"Card in box {review_log.box} rated {review_log.rating} \
+print(f"Card in box {review_log.card.box} rated {review_log.rating} \
 on {review_log.review_datetime}")
 # => Card in box 1 rated 1 on 2024-10-21 20:58:29.758259
 ```
@@ -168,3 +168,12 @@ card, review_log = scheduler.review_card(card, rating, review_datetime)
 ```
 
 To re-iterate, the reason you should opt for a local timezone is because the `LeitnerScheduler` schedules cards at the beginning of each day, and when each day begins depends on the timezone of the user. 
+
+## Versioning
+
+This python package is currently unstable and adheres to the following versioning scheme:
+
+- **Minor** version will increase when a backward-incompatible change is introduced.
+- **Patch** version will increase when a bug is fixed or a new feature is added.
+
+Once this package is considered stable, the **Major** version will be bumped to 1.0.0 and will follow [semver](https://semver.org/).
