@@ -11,7 +11,7 @@ Classes:
 """
 
 from enum import IntEnum
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional, Union, Any, Literal
 from copy import deepcopy
 
@@ -28,14 +28,20 @@ class Card:
     Represents a flashcard in the Leitner System.
 
     Attributes:
+        card_id (int): The id of the card. Defaults to the epoch miliseconds of when the card was created.
         box (int): The box that the card is currently in.
         due (Optional[datetime]): When the card is due for review.
     """
 
+    card_id: int
     box: int
     due: Optional[datetime]
 
-    def __init__(self, box: int=1, due: Optional[datetime]=None) -> None:
+    def __init__(self, card_id: Optional[int]=None, box: int=1, due: Optional[datetime]=None) -> None:
+
+        if card_id is None:
+            card_id = int(datetime.now(timezone.utc).timestamp() * 1000)
+        self.card_id = card_id
 
         self.box = box
         self.due = due
@@ -43,6 +49,7 @@ class Card:
     def to_dict(self) -> dict[str, Union[int, str]]:
 
         return_dict: dict[str, Union[int, str]] = {
+            "card_id": self.card_id,
             "box": self.box,
         }
 
@@ -55,6 +62,7 @@ class Card:
     @staticmethod
     def from_dict(source_dict: dict[str, Any]) -> "Card":
 
+        card_id = int(source_dict['card_id'])
         box = int(source_dict['box'])
 
         if "due" in source_dict:
@@ -63,7 +71,7 @@ class Card:
         else:
             due = None
 
-        return Card(box=box, due=due)
+        return Card(card_id=card_id, box=box, due=due)
 
 
 class ReviewLog:
@@ -152,7 +160,7 @@ class LeitnerScheduler:
         """
 
         # the card to be returned after review
-        new_card = Card(box=card.box, due=card.due)
+        new_card = deepcopy(card)
 
         if review_datetime is None:
             review_datetime = datetime.now()
