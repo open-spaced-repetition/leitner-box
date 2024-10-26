@@ -2,8 +2,14 @@
 
 Python package implementing the [Leitner system](https://en.wikipedia.org/wiki/Leitner_system) for spaced repetition scheduling.
 
-## Quickstart
+## Installation
 
+You can install the leitner-box python package from [PyPI](https://pypi.org/project/leitner-box/) using pip:
+```
+pip install leitner-box
+```
+
+## Quickstart
 
 Import and initialize the Leitner scheduler
 
