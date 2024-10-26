@@ -52,20 +52,18 @@ print(f"Card in box {card.box} due on {card.due}")
 
 The `LeitnerScheduler` has three parameters: 1) `box_intervals`, 2) `start_datetime`, and 3) `on_fail`.
 
-#### `box_intervals` 
-is a list of integers corresponding to the interval lengths of each box. 
-
-In the following example, cards in box 1 are reviewed every day, cards in box 2 are reviewed every 2 days and cards in box 3 are reviewed every 7 days. There are only three boxes in this example.
+`box_intervals` is a list of integers corresponding to the interval lengths of each box. 
 
 ```python
 box_intervals = [1,2,7] # this also the default
 scheduler = LeitnerScheduler(box_intervals=box_intervals)
 ```
 
-Note: in the current version of this package, the interval for box 1 must always be set 1 day. There may be more flexible options in future versions.
+In this example, cards in box 1 are reviewed every day, cards in box 2 are reviewed every 2 days and cards in box 3 are reviewed every 7 days. There are only three boxes in this example.
 
-#### `start_datetime` 
-is the datetime that you first created the Leitner System. It is an important parameter in determining when the cards in each box are reviewed. It should be noted that the important information lies in which day the Leitner System was created, not the exact hour, minute, etc. This is because because the scheduler schedules cards to be due at the beginning of each day.
+Note: in the current version of this package, the interval for box 1 must always be set to 1 day. There may be more flexible options in future versions.
+
+`start_datetime` is the datetime that you first created the Leitner System. It is an important parameter in determining when the cards in each box are reviewed. It should be noted that the important information lies in which day the Leitner System was created, not the exact hour, minute, etc. This is because because the scheduler schedules cards to be due at the beginning of each day.
 
 ```python
 from datetime import datetime
@@ -88,11 +86,9 @@ print(f"Card is due on {card.due}")
 
 In the above example, even though the scheduler was created in the evening of 2024-10-21 (and the card was also reviewed late in the evening of 2024-10-21), the card becomes due first thing the next day - *not* a full 24 hours later.
 
-#### `on_fail`
+`on_fail` has two possible values 1) `first_box` or 2) `prev_box`.
 
-has two possible values 1) `first_box` or 2) `prev_box`.
-
-If `on_fail='first_box'`, cards that are failed will be put back in box 1 and if `on_fail='prev_box'`, failed cards will be put in the previous box. `on_fail='first_box'` is the default.
+If `on_fail='first_box'`, cards that are failed will be put back in box 1 and if `on_fail='prev_box'`, failed cards will be put in the previous box. `on_fail='first_box'` is the default value.
 
 ### Serialization
 
@@ -130,7 +126,7 @@ rating = Rating.Pass
 card, review_log = scheduler.review_card(card, rating) # correct
 ```
 
-In general, you should continue using the same scheduler that you first reviewed the card with. Otherwise this could lead to scheduling issues.
+In general, you should continue using the same scheduler that you first reviewed the card with. Doing otherwise could lead to scheduling issues.
 
 **Check if a card is due before attempting to review it**
 
@@ -149,7 +145,7 @@ card, review_log = scheduler.review_card(card, rating)
 
 **Be explicit about datetimes and use a local timezone**
 
-Even though you can initialize the scheduler and review cards without explicitly specifying a time (it defaults to `datetime.now()`), you should consider explicitly specifying the datetimes with local timezones included if you plan on building any sort of application.
+While this package operates using [timezone-naive](https://docs.python.org/3/library/datetime.html#aware-and-naive-objects) datetime objects, it's still recommended to provide timezone-aware datetime objects localized to where the user currently is when initializing the scheduler or reviewing cards.
 
 ```python
 from leitner_box import LeitnerScheduler, Card, Rating, ReviewLog
@@ -167,7 +163,9 @@ review_datetime = datetime.now(ZoneInfo('America/Los_Angeles'))
 card, review_log = scheduler.review_card(card, rating, review_datetime)
 ```
 
-To re-iterate, the reason you should opt for a local timezone is because the `LeitnerScheduler` schedules cards at the beginning of each day, and when each day begins depends on the timezone of the user. 
+Under the hood, these datetimes are coerced to become datetime naive, but you still have the option of specifying datetime-aware objects.
+
+To re-iterate, cards in each box are made due at the beginning of each day, regardless of the timezone. As a consequence of this, when determining whether a user should review cards in a given box, you should know what day it is where they are.
 
 ## Versioning
 
