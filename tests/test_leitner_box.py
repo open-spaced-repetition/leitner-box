@@ -162,8 +162,8 @@ class TestLeitnerBox:
         card, review_log = scheduler.review_card(card, rating, review_datetime)
 
         assert card.box == 1
-        assert card.due != datetime(2024, 1, 2, 0, 0, 0, 0)
-        assert card.due == datetime(2024, 1, 2, 0, 0, 0, 0, timezone.utc)
+        assert card.due == datetime(2024, 1, 2, 0, 0, 0, 0)
+        assert card.due != datetime(2024, 1, 2, 0, 0, 0, 0, timezone.utc)
 
         # pass the card on Jan. 2
         rating = Rating.Pass
@@ -171,7 +171,7 @@ class TestLeitnerBox:
         card, review_log = scheduler.review_card(card, rating, review_datetime)
 
         assert card.box == 2
-        assert card.due == datetime(2024, 1, 4, 0, 0, 0, 0, timezone.utc)
+        assert card.due == datetime(2024, 1, 4, 0, 0, 0, 0)
 
         # attempt to pass the card on Jan. 3 when it is not due
         rating = Rating.Pass
@@ -185,7 +185,7 @@ class TestLeitnerBox:
         card, review_log = scheduler.review_card(card, rating, review_datetime)
 
         assert card.box == 3
-        assert card.due == datetime(2024, 1, 7, 0, 0, 0, 0, timezone.utc)
+        assert card.due == datetime(2024, 1, 7, 0, 0, 0, 0)
 
         # pass card on Jan. 7
         rating = Rating.Pass
@@ -194,7 +194,7 @@ class TestLeitnerBox:
 
         # card is still in box 3
         assert card.box == 3
-        assert card.due == datetime(2024, 1, 14, 0, 0, 0, 0, timezone.utc)
+        assert card.due == datetime(2024, 1, 14, 0, 0, 0, 0)
 
         # fail card on Jan. 14
         rating = Rating.Fail
@@ -203,7 +203,7 @@ class TestLeitnerBox:
 
         # card moves back to box 1
         assert card.box == 1
-        assert card.due == datetime(2024, 1, 15, 0, 0, 0, 0, timezone.utc)
+        assert card.due == datetime(2024, 1, 15, 0, 0, 0, 0)
 
         rating = Rating.Pass
         review_datetime = datetime(2024, 1, 15, 0, 0, 0, 0, timezone.utc)
@@ -212,7 +212,7 @@ class TestLeitnerBox:
 
         assert card.box == 2
         # card is also due next day because that's a day that box 2 is repeated
-        assert card.due == datetime(2024, 1, 16, 0, 0, 0, 0, timezone.utc)
+        assert card.due == datetime(2024, 1, 16, 0, 0, 0, 0)
 
     def test_basic_review_schedule_with_la_timezone(self):
 
@@ -232,9 +232,9 @@ class TestLeitnerBox:
         card, review_log = scheduler.review_card(card, rating, review_datetime)
 
         assert card.box == 1
-        assert card.due != datetime(2024, 1, 2, 0, 0, 0, 0)
+        assert card.due == datetime(2024, 1, 2, 0, 0, 0, 0)
         assert card.due != datetime(2024, 1, 2, 0, 0, 0, 0, timezone.utc)
-        assert card.due == datetime(2024, 1, 2, 0, 0, 0, 0, tzinfo=ZoneInfo('America/Los_Angeles'))
+        assert card.due != datetime(2024, 1, 2, 0, 0, 0, 0, tzinfo=ZoneInfo('America/Los_Angeles'))
 
         # pass the card on Jan. 2
         rating = Rating.Pass
@@ -242,7 +242,7 @@ class TestLeitnerBox:
         card, review_log = scheduler.review_card(card, rating, review_datetime)
 
         assert card.box == 2
-        assert card.due == datetime(2024, 1, 4, 0, 0, 0, 0, tzinfo=ZoneInfo('America/Los_Angeles'))
+        assert card.due == datetime(2024, 1, 4, 0, 0, 0, 0)
 
         # attempt to pass the card on Jan. 3 when it is not due
         rating = Rating.Pass
@@ -256,7 +256,7 @@ class TestLeitnerBox:
         card, review_log = scheduler.review_card(card, rating, review_datetime)
 
         assert card.box == 3
-        assert card.due == datetime(2024, 1, 7, 0, 0, 0, 0, tzinfo=ZoneInfo('America/Los_Angeles'))
+        assert card.due == datetime(2024, 1, 7, 0, 0, 0, 0)
 
         # pass card on Jan. 7
         rating = Rating.Pass
@@ -265,7 +265,7 @@ class TestLeitnerBox:
 
         # card is still in box 3
         assert card.box == 3
-        assert card.due == datetime(2024, 1, 14, 0, 0, 0, 0, tzinfo=ZoneInfo('America/Los_Angeles'))
+        assert card.due == datetime(2024, 1, 14, 0, 0, 0, 0)
 
         # fail card on Jan. 14
         rating = Rating.Fail
@@ -274,7 +274,7 @@ class TestLeitnerBox:
 
         # card moves back to box 1
         assert card.box == 1
-        assert card.due == datetime(2024, 1, 15, 0, 0, 0, 0, tzinfo=ZoneInfo('America/Los_Angeles'))
+        assert card.due == datetime(2024, 1, 15, 0, 0, 0, 0)
 
         rating = Rating.Pass
         review_datetime = datetime(2024, 1, 15, 0, 0, 0, 0, tzinfo=ZoneInfo('America/Los_Angeles'))
@@ -283,7 +283,7 @@ class TestLeitnerBox:
 
         assert card.box == 2
         # card is also due next day because that's a day that box 2 is repeated
-        assert card.due == datetime(2024, 1, 16, 0, 0, 0, 0, tzinfo=ZoneInfo('America/Los_Angeles'))
+        assert card.due == datetime(2024, 1, 16, 0, 0, 0, 0)
 
     def test_box_intervals(self):
 

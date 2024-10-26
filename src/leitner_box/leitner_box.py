@@ -139,6 +139,7 @@ class LeitnerScheduler:
         if start_datetime is None:
             self.start_datetime = datetime.now()
         else:
+            start_datetime = start_datetime.replace(tzinfo=None)
             self.start_datetime = start_datetime
 
         self.on_fail = on_fail
@@ -159,11 +160,15 @@ class LeitnerScheduler:
             RuntimeError: If the given card is reviewed at a time where it is not yet due.
         """
 
-        # the card to be returned after review
-        new_card = deepcopy(card)
-
         if review_datetime is None:
             review_datetime = datetime.now()
+
+        review_log = ReviewLog(card=card, rating=rating, review_datetime=review_datetime)
+
+        review_datetime = review_datetime.replace(tzinfo=None) # review log datetimes can log timezone info, but it is dropped immediately after
+
+        # the card to be returned after review
+        new_card = deepcopy(card)
 
         if new_card.due is None:
             new_card.due = review_datetime.replace(hour=0, minute=0, second=0, microsecond=0) # beginning of the day of review
@@ -171,8 +176,6 @@ class LeitnerScheduler:
         card_is_due = review_datetime >= new_card.due
         if not card_is_due:
             raise RuntimeError(f"Card is not due for review until {new_card.due}.")
-
-        review_log = ReviewLog(card=card, rating=rating, review_datetime=review_datetime)
 
         if rating == Rating.Fail:
 
