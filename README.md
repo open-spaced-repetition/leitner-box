@@ -184,4 +184,4 @@ Once this package is considered stable, the **Major** version will be bumped to 
 
 ## Contribute
 
-Checkout [CONTRIBUTING](https://github.com/joshdavham/leitner-box/blob/main/CONTRIBUTING.md) to help improve leitner-box!
+Checkout [CONTRIBUTING](https://github.com/open-spaced-repetition/leitner-box/blob/main/CONTRIBUTING.md) to help improve leitner-box!

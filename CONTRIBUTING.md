@@ -8,12 +8,12 @@ In this short guide, you will get a quick overview of how you can contribute to 
 
 If you encounter an issue with leitner-box and would like to report it, you'll first want to make sure you're using the latest version of leitner-box.
 
-The latest version of leitner-box can be found under [releases](https://github.com/joshdavham/leitner-box/releases) and you can verify the version of your current installation with the following command:
+The latest version of leitner-box can be found under [releases](https://github.com/open-spaced-repetition/leitner-box/releases) and you can verify the version of your current installation with the following command:
 ```
 pip show leitner-box
 ```
 
-Once you've confirmed your version, please report your issue in the [issues tab](https://github.com/joshdavham/leitner-box/issues).
+Once you've confirmed your version, please report your issue in the [issues tab](https://github.com/open-spaced-repetition/leitner-box/issues).
 
 ## Contributing code
 
