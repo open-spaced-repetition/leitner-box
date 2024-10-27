@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "leitner_box"
-version = "0.1.0"
+version = "0.1.1"
 description = "Leitner system spaced repetition"
 readme = "README.md"
 authors = [{ name = "Joshua Hamilton", email = "hamiltonjoshuadavid@gmail.com" }]
@@ -15,7 +15,7 @@ classifiers = [
     "Operating System :: OS Independent"
 ]
 keywords=['leitner', 'spaced-repetition', 'flashcard']
-urls = { homepage = "https://github.com/joshdavham/leitner-box" }
+urls = { homepage = "https://github.com/open-spaced-repetition/leitner-box" }
 dependencies = []
 requires-python = ">=3.9"
 

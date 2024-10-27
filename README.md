@@ -1,6 +1,30 @@
-# leitner-box
+<div align="center">
+  <img src="https://avatars.githubusercontent.com/u/96821265?s=200&v=4" height="100" alt="Open Spaced Repetition logo"/>
+</div>
+<div align="center">
 
-Python package implementing the [Leitner system](https://en.wikipedia.org/wiki/Leitner_system) for spaced repetition scheduling.
+# Leitner Box
+</div>
+
+<div align="center">
+  <em>📦🔄 Build your own Leitner System in Python 📦🔄</em>
+</div>
+<br />
+<div align="center" style="text-decoration: none;">
+    <a href="https://pypi.org/project/leitner-box/"><img src="https://img.shields.io/pypi/v/leitner-box"></a>
+    <a href="https://github.com/open-spaced-repetition/leitner-box/blob/main/LICENSE" style="text-decoration: none;"><img src="https://img.shields.io/badge/License-MIT-brightgreen.svg"></a>
+</div>
+<br />
+
+<div align="center">
+    <strong>
+    Python package implementing the <a href="https://en.wikipedia.org/wiki/Leitner_system">Leitner system</a> for spaced repetition scheduling.
+    </strong>
+</div>
+
+<div align="center">
+    <img src="leitner-system.svg" height="300"/>
+</div>
 
 ## Installation
 
@@ -184,4 +208,4 @@ Once this package is considered stable, the **Major** version will be bumped to 
 
 ## Contribute
 
-Checkout [CONTRIBUTING](https://github.com/joshdavham/leitner-box/blob/main/CONTRIBUTING.md) to help improve leitner-box!
+Checkout [CONTRIBUTING](https://github.com/open-spaced-repetition/leitner-box/blob/main/CONTRIBUTING.md) to help improve leitner-box!
