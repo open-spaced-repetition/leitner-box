@@ -88,24 +88,28 @@ class ReviewLog:
         card (Card): Copy of the card object that was reviewed.
         rating (Rating): The rating given to the card during the review.
         review_datetime (datetime): The date and time of the review.
+        review_duration (Optional[int]): The amount of time in miliseconds it took to review the card, if specified.
     """
 
     card: Card
     rating: Rating
     review_datetime: datetime
+    review_duration: Optional[int]
 
-    def __init__(self, card: Card, rating: Rating, review_datetime: datetime) -> None:
+    def __init__(self, card: Card, rating: Rating, review_datetime: datetime, review_duration: Optional[int] = None) -> None:
 
         self.card = deepcopy(card)
         self.rating = rating
         self.review_datetime = review_datetime
+        self.review_duration = review_duration
 
-    def to_dict(self) -> dict[str, Union[dict, int, str]]:
+    def to_dict(self) -> dict[str, Union[dict[str, Union[int, str, None]], int, str, None]]:
 
         return_dict = {
             "card": self.card.to_dict(),
             "rating": self.rating.value,
             "review_datetime": self.review_datetime.isoformat(),
+            "review_duration": self.review_duration
         }
 
         return return_dict
@@ -116,8 +120,9 @@ class ReviewLog:
         card = Card.from_dict(source_dict['card'])
         rating = Rating(int(source_dict["rating"]))
         review_datetime = datetime.fromisoformat(source_dict["review_datetime"])
+        review_duration = source_dict['review_duration']
 
-        return ReviewLog(card=card, rating=rating, review_datetime=review_datetime)
+        return ReviewLog(card=card, rating=rating, review_datetime=review_datetime, review_duration=review_duration)
 
 class LeitnerScheduler:
     """
@@ -150,7 +155,7 @@ class LeitnerScheduler:
 
         self.on_fail = on_fail
 
-    def review_card(self, card: Card, rating: Rating, review_datetime: Optional[datetime]=None) -> tuple[Card, ReviewLog]:
+    def review_card(self, card: Card, rating: Rating, review_datetime: Optional[datetime]=None, review_duration: Optional[int] = None) -> tuple[Card, ReviewLog]:
         """
         Reviews a card with a given rating at a specified time.
 
@@ -158,6 +163,7 @@ class LeitnerScheduler:
             card (Card): The card being reviewed.
             rating (Rating): The chosen rating for the card being reviewed.
             review_datetime (Optional[datetime]): The date and time of the review.
+            review_duration (Optional[int]): The amount of time in miliseconds it took to review the card, if specified.
 
         Returns:
             tuple: A tuple containing the updated, reviewed card and its corresponding review log.
@@ -169,7 +175,7 @@ class LeitnerScheduler:
         if review_datetime is None:
             review_datetime = datetime.now()
 
-        review_log = ReviewLog(card=card, rating=rating, review_datetime=review_datetime)
+        review_log = ReviewLog(card=card, rating=rating, review_datetime=review_datetime, review_duration=review_duration)
 
         review_datetime = review_datetime.replace(tzinfo=None) # review log datetimes can log timezone info, but it is dropped immediately after
 
