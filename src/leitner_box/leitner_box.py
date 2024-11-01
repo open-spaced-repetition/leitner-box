@@ -12,7 +12,7 @@ Classes:
 
 from enum import IntEnum
 from datetime import datetime, timedelta, timezone
-from typing import Optional, Union, Any, Literal
+from typing import Any, Literal
 from copy import deepcopy
 
 class Rating(IntEnum):
@@ -30,14 +30,14 @@ class Card:
     Attributes:
         card_id (int): The id of the card. Defaults to the epoch miliseconds of when the card was created.
         box (int): The box that the card is currently in.
-        due (Optional[datetime]): When the card is due for review.
+        due (datetime | None): When the card is due for review.
     """
 
     card_id: int
     box: int
-    due: Optional[datetime]
+    due: datetime | None
 
-    def __init__(self, card_id: Optional[int]=None, box: int=1, due: Optional[datetime]=None) -> None:
+    def __init__(self, card_id: int | None = None, box: int=1, due: datetime | None = None) -> None:
 
         if card_id is None:
             card_id = int(datetime.now(timezone.utc).timestamp() * 1000)
@@ -46,9 +46,9 @@ class Card:
         self.box = box
         self.due = due
 
-    def to_dict(self) -> dict[str, Union[int, str, None]]:
+    def to_dict(self) -> dict[str, int | str | None]:
 
-        return_dict: dict[str, Union[int, str, None]] = {
+        return_dict: dict[str, int | str | None] = {
             "card_id": self.card_id,
             "box": self.box,
         }
@@ -88,22 +88,22 @@ class ReviewLog:
         card (Card): Copy of the card object that was reviewed.
         rating (Rating): The rating given to the card during the review.
         review_datetime (datetime): The date and time of the review.
-        review_duration (Optional[int]): The amount of time in miliseconds it took to review the card, if specified.
+        review_duration (int | None): The amount of time in miliseconds it took to review the card, if specified.
     """
 
     card: Card
     rating: Rating
     review_datetime: datetime
-    review_duration: Optional[int]
+    review_duration: int | None
 
-    def __init__(self, card: Card, rating: Rating, review_datetime: datetime, review_duration: Optional[int] = None) -> None:
+    def __init__(self, card: Card, rating: Rating, review_datetime: datetime, review_duration: int | None = None) -> None:
 
         self.card = deepcopy(card)
         self.rating = rating
         self.review_datetime = review_datetime
         self.review_duration = review_duration
 
-    def to_dict(self) -> dict[str, Union[dict[str, Union[int, str, None]], int, str, None]]:
+    def to_dict(self) -> dict[str, dict[str, int | str | None] | int | str | None]:
 
         return_dict = {
             "card": self.card.to_dict(),
@@ -140,7 +140,7 @@ class LeitnerScheduler:
     start_datetime: datetime
     on_fail: str
 
-    def __init__(self, box_intervals: list[int]=[1, 2, 7], start_datetime: Optional[datetime]=None, on_fail: Literal['first_box', 'prev_box']='first_box') -> None:
+    def __init__(self, box_intervals: list[int]=[1, 2, 7], start_datetime: datetime | None = None, on_fail: Literal['first_box', 'prev_box']='first_box') -> None:
 
         if box_intervals[0] != 1:
 
@@ -155,15 +155,15 @@ class LeitnerScheduler:
 
         self.on_fail = on_fail
 
-    def review_card(self, card: Card, rating: Rating, review_datetime: Optional[datetime]=None, review_duration: Optional[int] = None) -> tuple[Card, ReviewLog]:
+    def review_card(self, card: Card, rating: Rating, review_datetime: datetime | None = None, review_duration: int | None = None) -> tuple[Card, ReviewLog]:
         """
         Reviews a card with a given rating at a specified time.
 
         Args:
             card (Card): The card being reviewed.
             rating (Rating): The chosen rating for the card being reviewed.
-            review_datetime (Optional[datetime]): The date and time of the review.
-            review_duration (Optional[int]): The amount of time in miliseconds it took to review the card, if specified.
+            review_datetime (datetime | None): The date and time of the review.
+            review_duration (int | None): The amount of time in miliseconds it took to review the card, if specified.
 
         Returns:
             tuple: A tuple containing the updated, reviewed card and its corresponding review log.
@@ -215,9 +215,9 @@ class LeitnerScheduler:
 
         return new_card, review_log
     
-    def to_dict(self) -> dict[str, Union[list[int], int, str]]:
+    def to_dict(self) -> dict[str, list[int] | int | str]:
 
-        return_dict: dict[str, Union[list[int], int, str]] = {
+        return_dict: dict[str, list[int] | int | str] = {
             "box_intervals": self.box_intervals,
             "start_datetime": self.start_datetime.isoformat(),
             "on_fail": self.on_fail
