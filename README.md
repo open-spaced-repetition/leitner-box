@@ -93,7 +93,7 @@ In this example, cards in box 1 are reviewed every day, cards in box 2 are revie
 
 Note: in the current version of this package, the interval for box 1 must always be set to 1 day. There may be more flexible options in future versions.
 
-`start_datetime` is the datetime that you first created the Leitner System. It is an important parameter in determining when the cards in each box are reviewed. It should be noted that the important information lies in which day the Leitner System was created, not the exact hour, minute, etc. This is because because the scheduler schedules cards to be due at the beginning of each day.
+`start_datetime` is the datetime that you first created the Leitner System. It is an important parameter in determining when the cards in each box are reviewed. It should be noted that the important information lies in which day the Leitner System was created, not the exact hour, minute, etc. This is because the scheduler schedules cards to be due at the beginning of each day.
 
 ```python
 from datetime import datetime
@@ -193,7 +193,7 @@ review_datetime = datetime.now(ZoneInfo('America/Los_Angeles'))
 card, review_log = scheduler.review_card(card, rating, review_datetime)
 ```
 
-Under the hood, these datetimes are coerced to become datetime naive, but you still have the option of specifying datetime-aware objects.
+Under the hood, these datetimes are coerced to become timezone-naive, but you still have the option of specifying timezone-aware datetime objects.
 
 To re-iterate, cards in each box are made due at the beginning of each day, regardless of the timezone. As a consequence of this, when determining whether a user should review cards in a given box, you should know what day it is where they are.
 
@@ -202,7 +202,7 @@ To re-iterate, cards in each box are made due at the beginning of each day, rega
 This python package is currently unstable and adheres to the following versioning scheme:
 
 - **Minor** version will increase when a backward-incompatible change is introduced.
-- **Patch** version will increase when a bug is fixed or a new feature is added.
+- **Patch** version will increase when a bug is fixed, a new feature is added or when anything else backward compatible warrants a new release.
 
 Once this package is considered stable, the **Major** version will be bumped to 1.0.0 and will follow [semver](https://semver.org/).
 
