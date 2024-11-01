@@ -46,9 +46,9 @@ class Card:
         self.box = box
         self.due = due
 
-    def to_dict(self) -> dict[str, Union[int, str]]:
+    def to_dict(self) -> dict[str, Union[int, str, None]]:
 
-        return_dict: dict[str, Union[int, str]] = {
+        return_dict: dict[str, Union[int, str, None]] = {
             "card_id": self.card_id,
             "box": self.box,
         }
@@ -56,6 +56,10 @@ class Card:
         if self.due is not None:
 
             return_dict["due"] = self.due.isoformat()
+
+        else:
+
+            return_dict["due"] = self.due
 
         return return_dict
     
@@ -65,11 +69,13 @@ class Card:
         card_id = int(source_dict['card_id'])
         box = int(source_dict['box'])
 
-        if "due" in source_dict:
+        if source_dict['due'] is None:
+
+            due = source_dict['due']
+
+        else:
 
             due = datetime.fromisoformat(source_dict["due"])
-        else:
-            due = None
 
         return Card(card_id=card_id, box=box, due=due)
 
