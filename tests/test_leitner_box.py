@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 import json
 import pytest
+from copy import deepcopy
 
 class TestLeitnerBox:
 
@@ -366,6 +367,7 @@ class TestLeitnerBox:
         scheduler = LeitnerScheduler()
 
         card = Card()
+        old_card = deepcopy(card)
 
         # card and scheduler are json-serializable
         assert type(json.dumps(scheduler.to_dict())) == str
@@ -385,7 +387,8 @@ class TestLeitnerBox:
 
         # review the card and perform more tests
         rating = Rating.Pass
-        card, review_log = scheduler.review_card(card, rating)
+        review_duration = 3000
+        card, review_log = scheduler.review_card(card=card, rating=rating, review_duration=review_duration)
 
         # review log is json-serializable
         assert type(json.dumps(review_log.to_dict())) == str
@@ -399,4 +402,7 @@ class TestLeitnerBox:
         # review_log can be serialized and de-serialized while remaining the same
         review_log_dict = review_log.to_dict()
         copied_review_log = ReviewLog.from_dict(review_log_dict)
-        assert review_log.to_dict() == copied_review_log.to_dict() 
+        assert review_log.to_dict() == copied_review_log.to_dict()
+        assert copied_review_log.review_duration == review_duration
+        # can use the review log to recreate the card that was reviewed
+        assert old_card.to_dict() == Card.from_dict(review_log.to_dict()['card']).to_dict()
