@@ -17,7 +17,7 @@ classifiers = [
 keywords=['leitner', 'spaced-repetition', 'flashcard']
 urls = { homepage = "https://github.com/open-spaced-repetition/leitner-box" }
 dependencies = []
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 [tool.mypy]
 ignore_missing_imports = true
