@@ -5,10 +5,9 @@ import json
 import pytest
 from copy import deepcopy
 
+
 class TestLeitnerBox:
-
     def test_basic_review_schedule(self):
-
         # create Leitner system at 2:30pm on Jan. 1, 2024
         start_datetime = datetime(2024, 1, 1, 14, 30, 0, 0)
         scheduler = Scheduler(start_datetime=start_datetime)
@@ -77,10 +76,9 @@ class TestLeitnerBox:
         assert card.due == datetime(2024, 1, 16, 0, 0, 0, 0)
 
     def test_basic_review_schedule_with_on_fail_prev_box(self):
-
         # create Leitner system at 2:30pm on Jan. 1, 2024
         start_datetime = datetime(2024, 1, 1, 14, 30, 0, 0)
-        on_fail = 'prev_box'
+        on_fail = "prev_box"
         scheduler = Scheduler(start_datetime=start_datetime, on_fail=on_fail)
 
         # create new Card
@@ -146,7 +144,6 @@ class TestLeitnerBox:
         assert card.due == datetime(2024, 1, 21, 0, 0, 0, 0)
 
     def test_basic_review_schedule_with_utc(self):
-
         # create Leitner system at 2:30pm on Jan. 1, 2024 UTC
         start_datetime = datetime(2024, 1, 1, 14, 30, 0, 0, timezone.utc)
         scheduler = Scheduler(start_datetime=start_datetime)
@@ -216,9 +213,10 @@ class TestLeitnerBox:
         assert card.due == datetime(2024, 1, 16, 0, 0, 0, 0)
 
     def test_basic_review_schedule_with_la_timezone(self):
-
         # create Leitner system at 2:30pm on Jan. 1, 2024 UTC
-        start_datetime = datetime(2024, 1, 1, 14, 30, 0, 0, tzinfo=ZoneInfo('America/Los_Angeles'))
+        start_datetime = datetime(
+            2024, 1, 1, 14, 30, 0, 0, tzinfo=ZoneInfo("America/Los_Angeles")
+        )
         scheduler = Scheduler(start_datetime=start_datetime)
 
         # create new Card
@@ -229,17 +227,23 @@ class TestLeitnerBox:
 
         # fail the card 2:35pm on Jan. 1, 2024
         rating = Rating.Fail
-        review_datetime = datetime(2024, 1, 1, 14, 35, 0, 0, tzinfo=ZoneInfo('America/Los_Angeles'))
+        review_datetime = datetime(
+            2024, 1, 1, 14, 35, 0, 0, tzinfo=ZoneInfo("America/Los_Angeles")
+        )
         card, review_log = scheduler.review_card(card, rating, review_datetime)
 
         assert card.box == 1
         assert card.due == datetime(2024, 1, 2, 0, 0, 0, 0)
         assert card.due != datetime(2024, 1, 2, 0, 0, 0, 0, timezone.utc)
-        assert card.due != datetime(2024, 1, 2, 0, 0, 0, 0, tzinfo=ZoneInfo('America/Los_Angeles'))
+        assert card.due != datetime(
+            2024, 1, 2, 0, 0, 0, 0, tzinfo=ZoneInfo("America/Los_Angeles")
+        )
 
         # pass the card on Jan. 2
         rating = Rating.Pass
-        review_datetime = datetime(2024, 1, 2, 0, 0, 0, 0, tzinfo=ZoneInfo('America/Los_Angeles'))
+        review_datetime = datetime(
+            2024, 1, 2, 0, 0, 0, 0, tzinfo=ZoneInfo("America/Los_Angeles")
+        )
         card, review_log = scheduler.review_card(card, rating, review_datetime)
 
         assert card.box == 2
@@ -247,13 +251,17 @@ class TestLeitnerBox:
 
         # attempt to pass the card on Jan. 3 when it is not due
         rating = Rating.Pass
-        review_datetime = datetime(2024, 1, 3, 0, 0, 0, 0, tzinfo=ZoneInfo('America/Los_Angeles'))
+        review_datetime = datetime(
+            2024, 1, 3, 0, 0, 0, 0, tzinfo=ZoneInfo("America/Los_Angeles")
+        )
         with pytest.raises(RuntimeError):
             card, review_log = scheduler.review_card(card, rating, review_datetime)
 
         # pass card on Jan. 4
         rating = Rating.Pass
-        review_datetime = datetime(2024, 1, 4, 0, 0, 0, 0, tzinfo=ZoneInfo('America/Los_Angeles'))
+        review_datetime = datetime(
+            2024, 1, 4, 0, 0, 0, 0, tzinfo=ZoneInfo("America/Los_Angeles")
+        )
         card, review_log = scheduler.review_card(card, rating, review_datetime)
 
         assert card.box == 3
@@ -261,7 +269,9 @@ class TestLeitnerBox:
 
         # pass card on Jan. 7
         rating = Rating.Pass
-        review_datetime = datetime(2024, 1, 7, 0, 0, 0, 0, tzinfo=ZoneInfo('America/Los_Angeles'))
+        review_datetime = datetime(
+            2024, 1, 7, 0, 0, 0, 0, tzinfo=ZoneInfo("America/Los_Angeles")
+        )
         card, review_log = scheduler.review_card(card, rating, review_datetime)
 
         # card is still in box 3
@@ -270,7 +280,9 @@ class TestLeitnerBox:
 
         # fail card on Jan. 14
         rating = Rating.Fail
-        review_datetime = datetime(2024, 1, 14, 0, 0, 0, 0, tzinfo=ZoneInfo('America/Los_Angeles'))
+        review_datetime = datetime(
+            2024, 1, 14, 0, 0, 0, 0, tzinfo=ZoneInfo("America/Los_Angeles")
+        )
         card, review_log = scheduler.review_card(card, rating, review_datetime)
 
         # card moves back to box 1
@@ -278,7 +290,9 @@ class TestLeitnerBox:
         assert card.due == datetime(2024, 1, 15, 0, 0, 0, 0)
 
         rating = Rating.Pass
-        review_datetime = datetime(2024, 1, 15, 0, 0, 0, 0, tzinfo=ZoneInfo('America/Los_Angeles'))
+        review_datetime = datetime(
+            2024, 1, 15, 0, 0, 0, 0, tzinfo=ZoneInfo("America/Los_Angeles")
+        )
 
         card, review_log = scheduler.review_card(card, rating, review_datetime)
 
@@ -287,11 +301,12 @@ class TestLeitnerBox:
         assert card.due == datetime(2024, 1, 16, 0, 0, 0, 0)
 
     def test_box_intervals(self):
-
         # create Leitner system at 2:30pm on Jan. 1, 2024
-        box_intervals = [1,2,3,5]
+        box_intervals = [1, 2, 3, 5]
         start_datetime = datetime(2024, 1, 1, 14, 30, 0, 0)
-        scheduler = Scheduler(box_intervals=box_intervals, start_datetime=start_datetime)
+        scheduler = Scheduler(
+            box_intervals=box_intervals, start_datetime=start_datetime
+        )
 
         # create new Card
         card = Card()
@@ -363,7 +378,6 @@ class TestLeitnerBox:
         assert card.due == datetime(2024, 1, 21, 0, 0, 0, 0)
 
     def test_serialize(self):
-
         scheduler = Scheduler()
 
         card = Card()
@@ -388,7 +402,9 @@ class TestLeitnerBox:
         # review the card and perform more tests
         rating = Rating.Pass
         review_duration = 3000
-        card, review_log = scheduler.review_card(card=card, rating=rating, review_duration=review_duration)
+        card, review_log = scheduler.review_card(
+            card=card, rating=rating, review_duration=review_duration
+        )
 
         # review log is json-serializable
         assert type(json.dumps(review_log.to_dict())) is str
@@ -405,4 +421,6 @@ class TestLeitnerBox:
         assert review_log.to_dict() == copied_review_log.to_dict()
         assert copied_review_log.review_duration == review_duration
         # can use the review log to recreate the card that was reviewed
-        assert old_card.to_dict() == Card.from_dict(review_log.to_dict()['card']).to_dict()
+        assert (
+            old_card.to_dict() == Card.from_dict(review_log.to_dict()["card"]).to_dict()
+        )
