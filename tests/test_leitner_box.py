@@ -1,4 +1,4 @@
-from leitner_box import LeitnerScheduler, Card, Rating, ReviewLog
+from leitner_box import Scheduler, Card, Rating, ReviewLog
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 import json
@@ -11,7 +11,7 @@ class TestLeitnerBox:
 
         # create Leitner system at 2:30pm on Jan. 1, 2024
         start_datetime = datetime(2024, 1, 1, 14, 30, 0, 0)
-        scheduler = LeitnerScheduler(start_datetime=start_datetime)
+        scheduler = Scheduler(start_datetime=start_datetime)
 
         # create new Card
         card = Card()
@@ -81,7 +81,7 @@ class TestLeitnerBox:
         # create Leitner system at 2:30pm on Jan. 1, 2024
         start_datetime = datetime(2024, 1, 1, 14, 30, 0, 0)
         on_fail = 'prev_box'
-        scheduler = LeitnerScheduler(start_datetime=start_datetime, on_fail=on_fail)
+        scheduler = Scheduler(start_datetime=start_datetime, on_fail=on_fail)
 
         # create new Card
         card = Card()
@@ -149,7 +149,7 @@ class TestLeitnerBox:
 
         # create Leitner system at 2:30pm on Jan. 1, 2024 UTC
         start_datetime = datetime(2024, 1, 1, 14, 30, 0, 0, timezone.utc)
-        scheduler = LeitnerScheduler(start_datetime=start_datetime)
+        scheduler = Scheduler(start_datetime=start_datetime)
 
         # create new Card
         card = Card()
@@ -219,7 +219,7 @@ class TestLeitnerBox:
 
         # create Leitner system at 2:30pm on Jan. 1, 2024 UTC
         start_datetime = datetime(2024, 1, 1, 14, 30, 0, 0, tzinfo=ZoneInfo('America/Los_Angeles'))
-        scheduler = LeitnerScheduler(start_datetime=start_datetime)
+        scheduler = Scheduler(start_datetime=start_datetime)
 
         # create new Card
         card = Card()
@@ -291,7 +291,7 @@ class TestLeitnerBox:
         # create Leitner system at 2:30pm on Jan. 1, 2024
         box_intervals = [1,2,3,5]
         start_datetime = datetime(2024, 1, 1, 14, 30, 0, 0)
-        scheduler = LeitnerScheduler(box_intervals=box_intervals, start_datetime=start_datetime)
+        scheduler = Scheduler(box_intervals=box_intervals, start_datetime=start_datetime)
 
         # create new Card
         card = Card()
@@ -364,7 +364,7 @@ class TestLeitnerBox:
 
     def test_serialize(self):
 
-        scheduler = LeitnerScheduler()
+        scheduler = Scheduler()
 
         card = Card()
         old_card = deepcopy(card)
@@ -381,7 +381,7 @@ class TestLeitnerBox:
 
         # scheduler can be serialized and de-serialized while remaining the same
         scheduler_dict = scheduler.to_dict()
-        copied_scheduler = LeitnerScheduler.from_dict(scheduler_dict)
+        copied_scheduler = Scheduler.from_dict(scheduler_dict)
         assert vars(scheduler) == vars(copied_scheduler)
         assert scheduler.to_dict() == copied_scheduler.to_dict()
 

@@ -38,9 +38,9 @@ pip install leitner-box
 Import and initialize the Leitner scheduler
 
 ```python
-from leitner_box import LeitnerScheduler, Card, Rating, ReviewLog
+from leitner_box import Scheduler, Card, Rating, ReviewLog
 
-scheduler = LeitnerScheduler()
+scheduler = Scheduler()
 ```
 
 Create a new Card object
@@ -80,13 +80,13 @@ print(f"Card in box {card.box} due on {card.due}")
 
 ### The scheduler
 
-The `LeitnerScheduler` has three parameters: 1) `box_intervals`, 2) `start_datetime`, and 3) `on_fail`.
+The `Scheduler` has three parameters: 1) `box_intervals`, 2) `start_datetime`, and 3) `on_fail`.
 
 `box_intervals` is a list of integers corresponding to the interval lengths of each box. 
 
 ```python
 box_intervals = [1,2,7] # this also the default
-scheduler = LeitnerScheduler(box_intervals=box_intervals)
+scheduler = Scheduler(box_intervals=box_intervals)
 ```
 
 In this example, cards in box 1 are reviewed every day, cards in box 2 are reviewed every 2 days and cards in box 3 are reviewed every 7 days. There are only three boxes in this example.
@@ -100,7 +100,7 @@ from datetime import datetime
 
 start_datetime = datetime.now() # also default datetime if not specified
 
-scheduler = LeitnerScheduler(start_datetime=start_datetime)
+scheduler = Scheduler(start_datetime=start_datetime)
 
 print(f"Scheduler created on {scheduler.start_datetime}")
 # => Scheduler created on 2024-10-21 21:15:23.491825
@@ -122,7 +122,7 @@ If `on_fail='first_box'`, cards that are failed will be put back in box 1 and if
 
 ### Serialization
 
-`LeitnerScheduler`, `Card` and `ReviewLog` objects are all json-serializable via their `to_dict` and `from_dict` methods for easy database storage:
+`Scheduler`, `Card` and `ReviewLog` objects are all json-serializable via their `to_dict` and `from_dict` methods for easy database storage:
 
 ```python
 # serialize before storage
@@ -131,7 +131,7 @@ card_dict = card.to_dict()
 review_log_dict = review_log.to_dict()
 
 # deserialize from dict
-scheduler = LeitnerScheduler(scheduler_dict)
+scheduler = Scheduler(scheduler_dict)
 card = Card.from_dict(card_dict)
 review_log = ReviewLog.from_dict(review_log_dict)
 ```
@@ -141,7 +141,7 @@ review_log = ReviewLog.from_dict(review_log_dict)
 **Re-use the same scheduler for the same cards**
 
 ```python
-scheduler = LeitnerScheduler(box_intervals=[1,2,7])
+scheduler = Scheduler(box_intervals=[1,2,7])
 card = Card()
 
 rating = Rating.Pass
@@ -149,7 +149,7 @@ card, review_log = scheduler.review_card(card, rating)
 
 # (...wait till next day)
 
-different_scheduler = LeitnerScheduler(box_intervals=[1,2,3,4,5])
+different_scheduler = Scheduler(box_intervals=[1,2,3,4,5])
 
 rating = Rating.Pass
 #card, review_log = different_scheduler.review_card(card, rating) # wrong
@@ -178,13 +178,13 @@ card, review_log = scheduler.review_card(card, rating)
 While this package operates using [timezone-naive](https://docs.python.org/3/library/datetime.html#aware-and-naive-objects) datetime objects, it's still recommended to provide timezone-aware datetime objects localized to where the user currently is when initializing the scheduler or reviewing cards.
 
 ```python
-from leitner_box import LeitnerScheduler, Card, Rating, ReviewLog
+from leitner_box import Scheduler, Card, Rating, ReviewLog
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
 # e.g., if you're in Los Angeles
 start_datetime = datetime.now(ZoneInfo('America/Los_Angeles'))
-scheduler = LeitnerScheduler(start_datetime=start_datetime)
+scheduler = Scheduler(start_datetime=start_datetime)
 
 card = Card()
 

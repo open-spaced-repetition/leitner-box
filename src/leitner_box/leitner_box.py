@@ -7,7 +7,7 @@ Classes:
     Rating: Enum representing the two possible ratings when reviewing a card.
     Card: Represents a flashcard in the Leitner System.
     ReviewLog: Represents the log entry of a Card object that has been reviewed.
-    LeitnerScheduler: The Leitner System scheduler.
+    Scheduler: The Leitner System scheduler.
 """
 
 from enum import IntEnum
@@ -124,7 +124,7 @@ class ReviewLog:
 
         return ReviewLog(card=card, rating=rating, review_datetime=review_datetime, review_duration=review_duration)
 
-class LeitnerScheduler:
+class Scheduler:
     """
     The Leitner System scheduler.
 
@@ -132,7 +132,7 @@ class LeitnerScheduler:
 
     Attributes:
         box_intervals (list[int]): List of integers representing the interval lengths --in days-- of each box. The number of boxes is equal to the number of the length of box_intervals.
-        start_datetime (datetime): The date and time that the LeitnerScheduler object was created. This is needed for scheduling purposes.
+        start_datetime (datetime): The date and time that the Scheduler object was created. This is needed for scheduling purposes.
         on_fail (str): What to do when a card is failed. Possible values are 'first_box' to move the card back to box 1, and 'prev_box' to move the card to the next lowest box.
     """
 
@@ -226,10 +226,10 @@ class LeitnerScheduler:
         return return_dict
     
     @staticmethod
-    def from_dict(source_dict: dict[str, Any]) -> "LeitnerScheduler":
+    def from_dict(source_dict: dict[str, Any]) -> "Scheduler":
 
         box_intervals = source_dict['box_intervals']
         start_datetime = datetime.fromisoformat(source_dict['start_datetime'])
         on_fail = source_dict['on_fail']
 
-        return LeitnerScheduler(box_intervals=box_intervals, start_datetime=start_datetime, on_fail=on_fail)
+        return Scheduler(box_intervals=box_intervals, start_datetime=start_datetime, on_fail=on_fail)
