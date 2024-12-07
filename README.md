@@ -23,7 +23,7 @@
 </div>
 
 <div align="center">
-    <img src="leitner-system.svg" height="300"/>
+    <img src="https://raw.githubusercontent.com/open-spaced-repetition/leitner-box/refs/heads/main/leitner-system.svg" height="300"/>
 </div>
 
 ## Installation
