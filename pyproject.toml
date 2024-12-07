@@ -19,5 +19,8 @@ urls = { homepage = "https://github.com/open-spaced-repetition/leitner-box" }
 dependencies = []
 requires-python = ">=3.10"
 
+[tool.ruff.lint]
+ignore = ["F401", "F403", "F405"]
+
 [tool.mypy]
 ignore_missing_imports = true
