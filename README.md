@@ -55,10 +55,8 @@ print(f"Card is in box {card.box}")
 Choose a rating and review the card
 
 ```python
-"""
-Rating.Fail # (==0) forgot the card
-Rating.Pass # (==1) remembered the card
-"""
+# Rating.Fail (==0) forgot the card
+# Rating.Pass (==1) remembered the card
 
 rating = Rating.Pass
 
@@ -205,6 +203,12 @@ This python package is currently unstable and adheres to the following versionin
 - **Patch** version will increase when a bug is fixed, a new feature is added or when anything else backward compatible warrants a new release.
 
 Once this package is considered stable, the **Major** version will be bumped to 1.0.0 and will follow [semver](https://semver.org/).
+
+## Other SRS python packages
+
+- [FSRS](https://github.com/open-spaced-repetition/py-fsrs)
+- [SM-2](https://github.com/open-spaced-repetition/sm-2)
+- [Anki Default Scheduler](https://github.com/open-spaced-repetition/anki-sm-2)
 
 ## Contribute
 
